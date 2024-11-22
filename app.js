@@ -30,34 +30,48 @@ window.addEventListener('load', () => {
 
 // Speech Recognition setup
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
 if (SpeechRecognition) {
     const recognition = new SpeechRecognition();
-    recognition.continuous = false;
+    recognition.continuous = false; // Set to false to listen for one command at a time
     recognition.lang = 'en-US';
 
     recognition.onstart = () => {
         content.textContent = "Listening...";
+        console.log("Speech recognition started.");
     };
 
     recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript.toLowerCase();
         content.textContent = `You said: ${transcript}`;
         takeCommand(transcript);
+
+        // Stop recognition after receiving the result
+        recognition.stop();
     };
 
     recognition.onerror = (event) => {
         console.error("Speech Recognition Error:", event.error);
         content.textContent = `Error: ${event.error}`;
-        speak(`I encountered an error: ${event.error}`);
+        speak(`Error encountered: ${event.error}`);
+
+        // Stop recognition if an error occurs
+        recognition.stop();
     };
 
     btn.addEventListener('click', () => {
-        recognition.start();
+        try {
+            recognition.start(); // Start recognition on every button click
+        } catch (error) {
+            console.error("Error starting speech recognition:", error);
+        }
     });
 } else {
     content.textContent = "Sorry, your browser does not support Speech Recognition.";
     console.error("SpeechRecognition API not supported.");
 }
+
+
 
 // Command handling
 function takeCommand(message) {
@@ -109,7 +123,7 @@ function takeCommand(message) {
 }
 
 function getWeather() {
-    fetch('https://api.openweathermap.org/data/2.5/weather?q=London&units=metric&appid=006cceb105db51e69e28f04a813c9db0')
+    fetch('https://api.openweathermap.org/data/2.5/weather?q=London&units=metric&appid=')
         .then(response => response.json())
         .then(data => {
             const weather = `The weather in ${data.name} is ${data.weather[0].description} with a temperature of ${data.main.temp}°C.`;
