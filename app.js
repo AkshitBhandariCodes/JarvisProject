@@ -1,7 +1,7 @@
 const btn = document.querySelector('.talk');
 const content = document.querySelector('.content');
 
-// Speech synthesis function
+
 function speak(text) {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 1;
@@ -10,7 +10,7 @@ function speak(text) {
     window.speechSynthesis.speak(utterance);
 }
 
-// Wishing function
+
 function wishMe() {
     const hour = new Date().getHours();
     if (hour >= 0 && hour < 12) {
@@ -22,18 +22,18 @@ function wishMe() {
     }
 }
 
-// Initialize on load
+
 window.addEventListener('load', () => {
     speak("Initializing JARVIS...");
     wishMe();
 });
 
-// Speech Recognition setup
+
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
 if (SpeechRecognition) {
     const recognition = new SpeechRecognition();
-    recognition.continuous = false; // Set to false to listen for one command at a time
+    recognition.continuous = false; 
     recognition.lang = 'en-US';
 
     recognition.onstart = () => {
@@ -46,7 +46,7 @@ if (SpeechRecognition) {
         content.textContent = `You said: ${transcript}`;
         takeCommand(transcript);
 
-        // Stop recognition after receiving the result
+
         recognition.stop();
     };
 
@@ -55,13 +55,13 @@ if (SpeechRecognition) {
         content.textContent = `Error: ${event.error}`;
         speak(`Error encountered: ${event.error}`);
 
-        // Stop recognition if an error occurs
+
         recognition.stop();
     };
 
     btn.addEventListener('click', () => {
         try {
-            recognition.start(); // Start recognition on every button click
+            recognition.start(); 
         } catch (error) {
             console.error("Error starting speech recognition:", error);
         }
@@ -73,7 +73,7 @@ if (SpeechRecognition) {
 
 
 
-// Command handling
+
 function takeCommand(message) {
     if (message.includes('hey') || message.includes('hello')) {
         speak("Hello Sir, how may I help you?");
@@ -101,7 +101,7 @@ function takeCommand(message) {
         const date = new Date().toLocaleDateString([], { month: 'short', day: 'numeric' });
         speak("Today's date is " + date);
     } 
-    // New Features
+
     else if (message.includes('weather')) {
         getWeather();
     } else if (message.includes('joke')) {
